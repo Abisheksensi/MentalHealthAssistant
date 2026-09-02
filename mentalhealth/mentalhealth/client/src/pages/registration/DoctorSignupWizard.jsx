@@ -300,9 +300,9 @@ const DoctorSignupWizard = ({ onSubmit, isSubmitting, error, success }) => {
         {/* Close Button */}
         <button 
           type="button"
-          onClick={() => navigate('/signup/patient')}
+          onClick={() => navigate('/login/patient')}
           className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-          title="Return to Patient Signup"
+          title="Return to Login"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -312,6 +312,22 @@ const DoctorSignupWizard = ({ onSubmit, isSubmitting, error, success }) => {
         <div className="text-center mb-8 mt-2">
           <h2 className="text-[28px] font-bold text-[#0f172a]">Create Your Account</h2>
           <p className="text-[#64748b] mt-1 text-[15px]">Join MindBridge to start your mental health journey</p>
+        </div>
+
+        <div className="flex bg-[#f1f5f9] p-1 rounded-xl mb-8">
+          <button
+            type="button"
+            onClick={() => navigate('/signup/patient')}
+            className="flex-1 py-2 rounded-lg text-[#64748b] hover:text-[#0f172a] font-medium transition-colors text-[15px]"
+          >
+            Patient
+          </button>
+          <button
+            type="button"
+            className="flex-1 py-2 rounded-lg bg-white text-[#0f172a] font-semibold shadow-sm text-[15px]"
+          >
+            Doctor
+          </button>
         </div>
 
         {error && <div className="mb-6 p-4 bg-rose-50 text-rose-600 text-sm rounded-lg border border-rose-100">{error}</div>}

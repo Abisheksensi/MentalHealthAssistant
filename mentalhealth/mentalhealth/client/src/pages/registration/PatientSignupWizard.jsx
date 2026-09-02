@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { apiRequest } from '../../lib/apiClient';
 
 const PatientSignupWizard = ({ onSubmit, isSubmitting: parentIsSubmitting }) => {
   const navigate = useNavigate();
@@ -26,11 +27,15 @@ const PatientSignupWizard = ({ onSubmit, isSubmitting: parentIsSubmitting }) => 
     }));
   };
 
-  const handleNext = (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
     setError('');
 
     // Validation
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -41,12 +46,28 @@ const PatientSignupWizard = ({ onSubmit, isSubmitting: parentIsSubmitting }) => 
     }
 
     setIsSubmitting(true);
-    // Simulate API call or go to next step
-    setTimeout(() => {
-      setIsSubmitting(false);
-      // For now, redirect to login or show success (as there is no step 2 defined yet)
+    
+    try {
+      await apiRequest('/api/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: formData.fullName.trim(),
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password
+        })
+      });
+      
+      // Navigate to login on success
       navigate('/login', { state: { message: "Account created successfully. Please login." } });
-    }, 1500);
+    } catch (err) {
+      if (err.status === 409) {
+        setError("An account with this email already exists.");
+      } else {
+        setError(err.message || "Failed to create account. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,6 +78,18 @@ const PatientSignupWizard = ({ onSubmit, isSubmitting: parentIsSubmitting }) => 
         <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-100">
           <div className="h-full bg-[#0ea5e9] w-1/2"></div>
         </div>
+
+        {/* Close Button */}
+        <button 
+          type="button"
+          onClick={() => navigate('/login/patient')}
+          className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+          title="Return to Login"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
 
         <div className="text-center mb-8 mt-2">
           <h2 className="text-[28px] font-bold text-[#0f172a]">Create Your Account</h2>
@@ -136,7 +169,7 @@ const PatientSignupWizard = ({ onSubmit, isSubmitting: parentIsSubmitting }) => 
                 className="w-full bg-white border border-[#e2e8f0] rounded-xl px-4 py-3 focus:outline-none focus:border-[#0ea5e9] focus:ring-1 focus:ring-[#0ea5e9] transition-colors text-[#94a3b8]"
                 placeholder="••••••••"
                 required
-                minLength={6}
+                minLength={8}
               />
             </div>
 
@@ -150,7 +183,7 @@ const PatientSignupWizard = ({ onSubmit, isSubmitting: parentIsSubmitting }) => 
                 className="w-full bg-white border border-[#e2e8f0] rounded-xl px-4 py-3 focus:outline-none focus:border-[#0ea5e9] focus:ring-1 focus:ring-[#0ea5e9] transition-colors text-[#94a3b8]"
                 placeholder="••••••••"
                 required
-                minLength={6}
+                minLength={8}
               />
             </div>
 
