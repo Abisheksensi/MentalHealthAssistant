@@ -7,7 +7,7 @@ import loginSideImage from "../assets/images/login-hero-figma.jpg";
 import LoginContainer from "./auth/LoginContainer";
 import LoginForm from "./auth/LoginForm";
 import SupportBanner from "./auth/SupportBanner";
-import DoctorSignupWizard from "./auth/DoctorSignupWizard";
+import DoctorSignupWizard from "../pages/registration/DoctorSignupWizard";
 import "./auth/auth.css";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
