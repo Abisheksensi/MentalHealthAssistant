@@ -22,7 +22,8 @@ import BookingConfirmationPage from "./pages/patient/BookingConfirmationPage";
 import AppointmentsPage from "./pages/patient/AppointmentsPage";
 import Unauthorized from "./pages/Unauthorized";
 import DoctorDashboard from "./pages/DoctorDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
 
 function RootRedirect() {
   const { isHydrating, isAuthenticated, role, user } = useAuth();
@@ -88,7 +89,8 @@ function App() {
     location.pathname === "/" ||
     location.pathname.startsWith("/patient") ||
     location.pathname.startsWith("/doctor/dashboard") ||
-    location.pathname.startsWith("/admin/dashboard");
+    location.pathname.startsWith("/admin/dashboard") ||
+    location.pathname === "/admin";
 
   return (
     <>
@@ -185,6 +187,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/admin" element={<AdminLogin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
