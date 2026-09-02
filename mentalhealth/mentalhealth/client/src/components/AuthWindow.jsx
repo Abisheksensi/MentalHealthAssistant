@@ -150,11 +150,32 @@ const AuthWindow = ({ mode = "login" }) => {
     setIsSubmitting(true);
 
     try {
+      const fileKeys = ['docRegistrationCert', 'docSlmcId', 'docMedicalDegree', 'docPostgrad', 'docSpecialist', 'docOther'];
+      const uploadedUrls = {};
+      
+      for (const key of fileKeys) {
+        if (formData[key] instanceof File) {
+          const uploadData = new FormData();
+          uploadData.append('image', formData[key]);
+          
+          // Use native fetch to hit the proxy for file uploads
+          const uploadRes = await fetch('/api/upload', {
+             method: 'POST',
+             body: uploadData
+          });
+          if (uploadRes.ok) {
+            const uploadJson = await uploadRes.json();
+            uploadedUrls[key] = uploadJson.imagePath;
+          }
+        }
+      }
+
       const body = {
         name: formData.fullName.trim(),
         email: formData.email.trim().toLowerCase(),
         password: "PENDING_APPROVAL_123!", // Dummy password since admin sets credentials
-        ...formData
+        ...formData,
+        ...uploadedUrls // Override File objects with URLs
       };
 
       const user = await apiRequest("/api/auth/signup-doctor", {
